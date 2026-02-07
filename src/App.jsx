@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
-import Casosal from "./components/Casosal";
-
-// Mock Data
+import Products from "./components/Products";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Carousel from "./components/Carousel";
 const INITIAL_PRODUCTS = [
   {
     id: 1,
@@ -49,19 +50,11 @@ const INITIAL_PRODUCTS = [
       "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000&auto=format&fit=crop",
     count: 0,
   },
-  {
-    id: 6,
-    name: "Mechanical Keyboard",
-    price: 149,
-    description: "Tactile switches for the ultimate typing experience.",
-    image:
-      "https://images.unsplash.com/photo-1587829741301-308231f89013?q=80&w=1000&auto=format&fit=crop",
-    count: 0,
-  },
 ];
 
 function App() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [view, setView] = useState("home");
 
   const handleIncrement = (id) => {
     setProducts((prev) =>
@@ -77,29 +70,48 @@ function App() {
     );
   };
 
-  const totalCartCount = products.reduce((acc, curr) => acc + curr.count, 0);
+  const renderContent = () => {
+    switch (view) {
+      case "products":
+        return (
+          <Products
+            products={products}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+          />
+        );
+      case "about":
+        return <About />;
+      case "contact":
+        return <Contact />;
+      case "home":
+      default:
+        return (
+          <>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+              <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
+                Discover <span className="text-gray-700">Excellence</span>
+              </h1>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Explore our curated collection of premium products designed to
+                elevate your everyday life.
+              </p>
+            </div>
+            <Carousel
+              products={products}
+              onIncrement={handleIncrement}
+              onDecrement={handleDecrement}
+            />
+          </>
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50">
-      <Navbar cartCount={totalCartCount} />
+      <Navbar setView={setView} />
 
-      <main className="pt-24 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
-            Discover <span className="text-blue-600">Excellence</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore our curated collection of premium products designed to
-            elevate your everyday life.
-          </p>
-        </div>
-
-        <Casosal
-          products={products}
-          onIncrement={handleIncrement}
-          onDecrement={handleDecrement}
-        />
-      </main>
+      <main className="pt-24 pb-12">{renderContent()}</main>
     </div>
   );
 }
