@@ -1,7 +1,13 @@
 import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Minus,
+  ShoppingBag,
+} from "lucide-react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onIncrement, onDecrement }) => {
   return (
     <div className="min-w-[280px] md:min-w-[320px] bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group snap-center flex flex-col">
       {/* Image Area */}
@@ -11,6 +17,11 @@ const ProductCard = ({ product }) => {
           alt={product.name}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
         />
+        {product.count > 0 && (
+          <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+            {product.count} in cart
+          </div>
+        )}
       </div>
 
       {/* Content Area */}
@@ -28,6 +39,35 @@ const ProductCard = ({ product }) => {
         </p>
 
         {/* Actions */}
+        <div className="mt-auto">
+          {product.count === 0 ? (
+            <button
+              onClick={() => onIncrement(product.id)}
+              className="w-full py-3 bg-black text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-800 active:scale-[0.98] transition-all"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Add to Cart
+            </button>
+          ) : (
+            <div className="flex items-center justify-between bg-gray-50 rounded-xl p-1 border border-gray-100">
+              <button
+                onClick={() => onDecrement(product.id)}
+                className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-700 hover:text-black hover:bg-gray-100 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="font-bold text-lg text-gray-900 w-8 text-center tabular-nums">
+                {product.count}
+              </span>
+              <button
+                onClick={() => onIncrement(product.id)}
+                className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-lg shadow-sm hover:bg-gray-800 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
