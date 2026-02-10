@@ -1,16 +1,11 @@
-import { useRef } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Minus,
-  ShoppingBag,
-} from "lucide-react";
+import { useRef, useEffect } from "react";
+import Splide from "@splidejs/splide";
+import "@splidejs/splide/dist/css/splide.min.css";
+import { Plus, Minus, ShoppingBag } from "lucide-react";
 
 const ProductCard = ({ product, onIncrement, onDecrement }) => {
   return (
-    <div className="min-w-[280px] md:min-w-[320px] bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group snap-center flex flex-col">
-      {/* Image Area */}
+    <div className="w-full bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col h-full">
       <div className="relative h-64 bg-gray-50 overflow-hidden">
         <img
           src={product.image}
@@ -24,8 +19,7 @@ const ProductCard = ({ product, onIncrement, onDecrement }) => {
         )}
       </div>
 
-      {/* Content Area */}
-      <div className="p-6 flex flex-col flex-grow">
+      <div className="p-6 flex flex-col grow">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
             {product.name}
@@ -34,11 +28,8 @@ const ProductCard = ({ product, onIncrement, onDecrement }) => {
             ${product.price}
           </span>
         </div>
-        <p className="text-sm text-gray-500 mb-6 flex-grow">
-          {product.description}
-        </p>
+        <p className="text-sm text-gray-500 mb-6 grow">{product.description}</p>
 
-        {/* Actions */}
         <div className="mt-auto">
           {product.count === 0 ? (
             <button
@@ -74,15 +65,36 @@ const ProductCard = ({ product, onIncrement, onDecrement }) => {
 };
 
 const Carousel = ({ products, onIncrement, onDecrement }) => {
-  const scrollRef = useRef(null);
+  const splideRef = useRef(null);
 
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const { current } = scrollRef;
-      const scrollAmount = direction === "left" ? -340 : 340;
-      current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  useEffect(() => {
+    if (splideRef.current) {
+      const splide = new Splide(splideRef.current, {
+        type: "slide",
+        perPage: 3,
+        perMove: 1,
+        gap: "1.5rem",
+        pagination: false,
+        padding: "1rem",
+        breakpoints: {
+          1024: {
+            perPage: 2,
+            gap: "1rem",
+          },
+          640: {
+            perPage: 1,
+            gap: "0.5rem",
+            padding: "2rem",
+          },
+        },
+      });
+      splide.mount();
+
+      return () => {
+        splide.destroy();
+      };
     }
-  };
+  }, []);
 
   return (
     <div className="w-full py-16 px-4 md:px-8 max-w-7xl mx-auto">
@@ -93,38 +105,22 @@ const Carousel = ({ products, onIncrement, onDecrement }) => {
           </h2>
           <p className="text-gray-500">Curated premium items just for you.</p>
         </div>
-
-        {/* Navigation Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => scroll("left")}
-            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white hover:border-black transition-all"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
       </div>
 
-      {/* Carousel Container */}
-      <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-hide px-2"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onIncrement={onIncrement}
-            onDecrement={onDecrement}
-          />
-        ))}
+      <div className="splide" ref={splideRef}>
+        <div className="splide__track">
+          <ul className="splide__list">
+            {products.map((product) => (
+              <li className="splide__slide flex h-auto" key={product.id}>
+                <ProductCard
+                  product={product}
+                  onIncrement={onIncrement}
+                  onDecrement={onDecrement}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
