@@ -23,14 +23,14 @@ const Products = ({ products, onIncrement, onDecrement }) => {
               )}
             </div>
 
-            <div className="p-4 flex flex-col flex-grow">
+            <div className="p-4 flex flex-col grow">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-bold text-gray-900">{product.name}</h3>
                 <span className="font-bold text-gray-900">
                   ${product.price}
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mb-4 flex-grow line-clamp-2">
+              <p className="text-xs text-gray-500 mb-4 grow line-clamp-2">
                 {product.description}
               </p>
 

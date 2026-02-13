@@ -36,10 +36,11 @@ const Navbar = ({ setView }) => {
               {link}
               <span className="absolute bottom-[-4px] left-0 w-0 h-[2px] bg-black transition-all group-hover:w-full"></span>
             </button>
+
+            
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
         <div className="flex items-center gap-4 md:hidden">
           <button
             className="p-2 text-gray-600 hover:text-black"
@@ -54,7 +55,6 @@ const Navbar = ({ setView }) => {
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
         <div className="absolute top-[80px] w-[90%] bg-white rounded-xl shadow-xl border border-gray-100 p-4 flex flex-col gap-4 md:hidden animate-in slide-in-from-top-5 duration-200">
           {["Home", "Products", "About", "Contact"].map((link) => (
